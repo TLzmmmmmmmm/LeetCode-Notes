@@ -44,3 +44,45 @@ return dummy.next;
 ## Takeaway
 
 > Dummy head + tail pointer + one unified loop.
+
+# 3. Longest Substring Without Repeating Characters
+
+## Core Idea
+
+Use **Sliding Window + Last Seen Index**.
+
+Maintain a valid window `[left, right]` with no duplicate characters:
+
+```cpp
+int seen[128] = {};
+int left = 0;
+int longest = 0;
+
+for (int right = 0; right < s.size(); right++) {
+    char c = s[right];
+
+    left = max(left, seen[c]);
+    seen[c] = right + 1;
+
+    longest = max(longest, right - left + 1);
+}
+```
+
+`seen[c]` stores the last index of `c` **plus 1**.  
+Using `max()` ensures `left` never moves backward.
+
+## Mistakes to Remember
+
+- Always update the loop variable; otherwise it causes an infinite loop / TLE
+- Scanning and copying `substring` repeatedly gives `O(n²)`
+- When the character set is small and fixed, an array is faster and simpler than `unordered_map`
+- `int seen[128] = {};` initializes all entries to `0`
+
+## Complexity
+
+- Time: `O(n)`
+- Space: `O(1)`
+
+## Takeaway
+
+> Sliding window + last seen position; move `left` forward instead of rebuilding the substring.
