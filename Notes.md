@@ -45,6 +45,8 @@ return dummy.next;
 
 > Dummy head + tail pointer + one unified loop.
 
+---
+
 # 3. Longest Substring Without Repeating Characters
 
 ## Core Idea
