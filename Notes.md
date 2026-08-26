@@ -88,3 +88,92 @@ Using `max()` ensures `left` never moves backward.
 ## Takeaway
 
 > Sliding window + last seen position; move `left` forward instead of rebuilding the substring.
+
+# 5. Longest Palindromic Substring
+
+## Core Idea
+
+Use **Expand Around Center**.
+
+Every palindrome is symmetric around its center.
+
+For each index `i`, check:
+
+```cpp
+expand(i, i);       // odd-length palindrome
+expand(i, i + 1);   // even-length palindrome
+```
+
+Expand while both sides are equal:
+
+```cpp
+while (left >= 0 && right < s.length() && s[left] == s[right]) {
+    left--;
+    right++;
+}
+```
+
+After expansion stops, the valid palindrome is:
+
+```cpp
+left + 1 ... right - 1
+```
+
+with length:
+
+```cpp
+right - left - 1
+```
+
+## Recommended Pattern
+
+```cpp
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int start = 0;
+        int maxLength = 1;
+
+        for (int i = 0; i < s.length(); i++) {
+            expand(s, i, i, start, maxLength);
+            expand(s, i, i + 1, start, maxLength);
+        }
+
+        return s.substr(start, maxLength);
+    }
+
+private:
+    void expand(const string& s, int left, int right,
+                int& start, int& maxLength) {
+        while (left >= 0 &&
+               right < s.length() &&
+               s[left] == s[right]) {
+            left--;
+            right++;
+        }
+
+        int length = right - left - 1;
+
+        if (length > maxLength) {
+            maxLength = length;
+            start = left + 1;
+        }
+    }
+};
+```
+
+## Mistakes to Remember
+
+- Do not assume every longest substring problem uses sliding window
+- Palindrome does not have the monotonic property needed for sliding window
+- Need to check both odd and even centers
+- After expansion stops, `left` and `right` have already moved one step too far
+
+## Complexity
+
+- Time: `O(n²)`
+- Space: `O(1)`
+
+## Takeaway
+
+> Palindrome → think symmetry → expand around every possible center.
