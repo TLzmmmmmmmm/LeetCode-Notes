@@ -177,3 +177,77 @@ private:
 ## Takeaway
 
 > Palindrome → think symmetry → expand around every possible center.
+
+# 6. Zigzag Conversion
+
+## Core Idea
+
+The Zigzag pattern repeats with cycle length:
+
+```cpp
+cycle = 2 * numRows - 2;
+```
+
+Instead of building a matrix, directly read characters row by row.
+
+For each row:
+
+```cpp
+for (int j = row; j < s.length(); j += cycle)
+```
+
+Middle rows also contain a diagonal character:
+
+```cpp
+second = j + cycle - 2 * row;
+```
+
+---
+
+## Recommended Pattern
+
+```cpp
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        if (numRows == 1 || numRows >= s.length()) {
+            return s;
+        }
+
+        string result;
+        int cycle = 2 * numRows - 2;
+
+        for (int row = 0; row < numRows; row++) {
+            for (int j = row; j < s.length(); j += cycle) {
+                result += s[j];
+
+                int second = j + cycle - 2 * row;
+
+                if (row != 0 &&
+                    row != numRows - 1 &&
+                    second < s.length()) {
+                    result += s[second];
+                }
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+## Mistakes to Remember
+
+- `new int[n]` does not initialize values; use `new int[n]()` if zero initialization is needed
+- Avoid building a full 2D matrix when most cells are unused
+- Watch for out-of-bounds indices
+- Repeating traversal patterns often have a useful cycle
+
+## Complexity
+
+- Time: `O(n)`
+- Extra Space: `O(1)`
+
+## Takeaway
+
+> Find the repeating cycle and compute indices directly instead of simulating the whole Zigzag matrix.
