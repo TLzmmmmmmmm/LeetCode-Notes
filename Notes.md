@@ -251,3 +251,71 @@ public:
 ## Takeaway
 
 > Find the repeating cycle and compute indices directly instead of simulating the whole Zigzag matrix.
+
+# 7. Reverse Integer
+
+## Core Idea
+
+Extract digits from the end and rebuild the reversed number:
+
+```cpp
+int digit = x % 10;
+x /= 10;
+
+result = result * 10 + digit;
+```
+
+C++ keeps the sign during `%` and integer division:
+
+```cpp
+-123 % 10 == -3
+-123 / 10 == -12
+```
+
+So no separate negative-sign handling is needed.
+
+## Recommended Pattern
+
+```cpp
+class Solution {
+public:
+    int reverse(int x) {
+        int result = 0;
+
+        while (x != 0) {
+            int digit = x % 10;
+            x /= 10;
+
+            if (result > INT_MAX / 10 ||
+                (result == INT_MAX / 10 && digit > 7)) {
+                return 0;
+            }
+
+            if (result < INT_MIN / 10 ||
+                (result == INT_MIN / 10 && digit < -8)) {
+                return 0;
+            }
+
+            result = result * 10 + digit;
+        }
+
+        return result;
+    }
+};
+```
+
+## Mistakes to Remember
+
+- Negative digits are already handled by `%` and `/`
+- Do not negate the result again for negative input
+- Check overflow **before** `result * 10 + digit`
+- Prefer `INT_MAX` / `INT_MIN` over `pow(2, 31)`
+
+## Complexity
+
+- Time: `O(log |x|)`
+- Space: `O(1)`
+
+## Takeaway
+
+> Extract digits with `% 10`, rebuild with `* 10`, and check overflow before updating the result.
