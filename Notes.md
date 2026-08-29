@@ -319,3 +319,85 @@ public:
 ## Takeaway
 
 > Extract digits with `% 10`, rebuild with `* 10`, and check overflow before updating the result.
+
+# 8. String to Integer (atoi)
+
+## Core Idea
+
+Parse the string in this order:
+
+```text
+leading spaces → optional sign → consecutive digits → stop
+```
+
+Build the number digit by digit:
+
+```cpp
+result = result * 10 + digit;
+```
+
+Stop immediately when the first non-digit character is reached.
+
+## Recommended Pattern
+
+```cpp
+class Solution {
+public:
+    int myAtoi(string s) {
+        int i = 0;
+        int n = s.length();
+
+        while (i < n && s[i] == ' ') {
+            i++;
+        }
+
+        bool negative = false;
+
+        if (i < n && (s[i] == '+' || s[i] == '-')) {
+            negative = (s[i] == '-');
+            i++;
+        }
+
+        int result = 0;
+
+        while (i < n && s[i] >= '0' && s[i] <= '9') {
+            int digit = s[i] - '0';
+
+            if (!negative &&
+                (result > INT_MAX / 10 ||
+                 (result == INT_MAX / 10 && digit > 7))) {
+                return INT_MAX;
+            }
+
+            if (negative &&
+                (result > INT_MAX / 10 ||
+                 (result == INT_MAX / 10 && digit >= 8))) {
+                return INT_MIN;
+            }
+
+            result = result * 10 + digit;
+            i++;
+        }
+
+        return negative ? -result : result;
+    }
+};
+```
+
+## Mistakes to Remember
+
+- `std::string` has no built-in `.trim()`
+- Invalid characters should `break`, not `continue`
+- Parse the sign only before the digits
+- Check overflow **before** `result * 10 + digit`
+- `INT_MAX = 2147483647`, but `INT_MIN = -2147483648`
+- For negative input, `2147483648` cannot be stored as a positive `int`
+
+## Complexity
+
+- Time: `O(n)`
+- Space: `O(1)`
+
+## Takeaway
+
+> Parse in order, stop at the first invalid character, and check integer bounds before updating the result.
