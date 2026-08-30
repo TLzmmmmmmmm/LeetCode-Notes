@@ -401,3 +401,69 @@ public:
 ## Takeaway
 
 > Parse in order, stop at the first invalid character, and check integer bounds before updating the result.
+
+# 11. Container With Most Water
+
+## Core Idea
+
+Use **Two Pointers** starting from both ends.
+
+Area:
+
+```cpp
+area = (right - left) * min(height[left], height[right]);
+```
+
+Since moving either pointer decreases the width, move the **shorter side** because only replacing the bottleneck can possibly increase the area.
+
+```cpp
+if (height[left] < height[right]) {
+    left++;
+} else {
+    right--;
+}
+```
+
+## Recommended Pattern
+
+```cpp
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int left = 0;
+        int right = height.size() - 1;
+        int result = 0;
+
+        while (left < right) {
+            int area = (right - left) *
+                       min(height[left], height[right]);
+
+            result = max(result, area);
+
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+## Mistakes to Remember
+
+- Checking many `left` values for every `right` can still become `O(n²)`
+- The shorter wall determines the current height
+- Moving the taller wall cannot improve the current bottleneck
+- Two pointers can safely eliminate impossible candidates
+
+## Complexity
+
+- Time: `O(n)`
+- Space: `O(1)`
+
+## Takeaway
+
+> When width must decrease, discard the shorter side because only replacing the bottleneck can improve the area.
