@@ -467,3 +467,79 @@ public:
 ## Takeaway
 
 > When width must decrease, discard the shorter side because only replacing the bottleneck can improve the area.
+
+# 12. Integer to Roman
+
+## Core Idea
+
+Use **Greedy**.
+
+Store all valid Roman numeral values from largest to smallest, including subtractive cases:
+
+```cpp
+vector<pair<int, string>> roman = {
+    {1000, "M"}, {900, "CM"},
+    {500, "D"},  {400, "CD"},
+    {100, "C"},  {90, "XC"},
+    {50, "L"},   {40, "XL"},
+    {10, "X"},   {9, "IX"},
+    {5, "V"},    {4, "IV"},
+    {1, "I"}
+};
+```
+
+Repeatedly use the largest value that fits:
+
+```cpp
+for (const auto& [value, symbol] : roman) {
+    while (num >= value) {
+        num -= value;
+        result += symbol;
+    }
+}
+```
+
+## Recommended Pattern
+
+```cpp
+class Solution {
+public:
+    string intToRoman(int num) {
+        vector<pair<int, string>> roman = {
+            {1000, "M"}, {900, "CM"},
+            {500, "D"},  {400, "CD"},
+            {100, "C"},  {90, "XC"},
+            {50, "L"},   {40, "XL"},
+            {10, "X"},   {9, "IX"},
+            {5, "V"},    {4, "IV"},
+            {1, "I"}
+        };
+
+        string result;
+
+        for (const auto& [value, symbol] : roman) {
+            while (num >= value) {
+                num -= value;
+                result += symbol;
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+## Mistakes to Remember
+
+- Use `"IV"` for strings, not `'IV'`
+- Treat `IV`, `IX`, `XL`, `XC`, `CD`, `CM` as normal mappings instead of special cases
+- `const auto&` avoids copying and prevents modification
+
+## Complexity
+
+- Time: `O(1)` for the fixed Roman numeral range
+- Space: `O(1)`
+
+## Takeaway
+
+> Greedy: always use the largest valid Roman numeral value first.
