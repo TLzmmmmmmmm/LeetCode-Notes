@@ -543,3 +543,91 @@ public:
 ## Takeaway
 
 > Greedy: always use the largest valid Roman numeral value first.
+
+# 15. 3Sum
+
+## Core Idea
+
+Sort the array, then fix one number and use **Two Pointers** to find the other two.
+
+```cpp
+target = -nums[i];
+left = i + 1;
+right = n - 1;
+```
+
+Move pointers based on the sum:
+
+```cpp
+if (nums[left] + nums[right] < target) {
+    left++;
+}
+else if (nums[left] + nums[right] > target) {
+    right--;
+}
+else {
+    // found a triplet
+}
+```
+
+## Recommended Pattern
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+
+        vector<vector<int>> result;
+        int n = nums.size();
+
+        for (int i = 0; i < n - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+
+            int left = i + 1;
+            int right = n - 1;
+
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+
+                if (sum < 0) {
+                    left++;
+                }
+                else if (sum > 0) {
+                    right--;
+                }
+                else {
+                    result.push_back({nums[i], nums[left], nums[right]});
+
+                    int leftValue = nums[left];
+                    int rightValue = nums[right];
+
+                    while (left < right && nums[left] == leftValue) left++;
+                    while (left < right && nums[right] == rightValue) right--;
+                }
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+## Mistakes to Remember
+
+- `vector` uses `.size()`, not `.length()`
+- Sort with `sort(nums.begin(), nums.end())`
+- After finding a valid triplet, move the pointers or the loop may never progress
+- Skip duplicate `i`, `left`, and `right` values
+- Start `left` from `i + 1`
+
+## Complexity
+
+- Time: `O(n²)`
+- Space: `O(1)` excluding output
+
+## Takeaway
+
+> Sort + fix one number + two pointers + skip duplicates.
